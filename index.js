@@ -138,6 +138,10 @@ dnode.prototype.listen = function () {
     var params = protocol.parseArgs(arguments);
     var server = params.server;
     
+    if (params.block) {
+      this.on('ready', params.block);
+    }
+        
     if (params.port) {
         if (params.key) {
             var options = {
@@ -209,12 +213,6 @@ dnode.prototype.listen = function () {
         self.stack.forEach(function (middleware) {
             middleware.call(client.instance, client.remote, client);
         });
-        
-        if (params.block) {
-            client.on('remote', function () {
-                params.block.call(client.instance, client.remote, client);
-            });
-        }
         
         client.start();
     });
